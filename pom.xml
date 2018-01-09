@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.spark.KNNTest</groupId>
+  <artifactId>sparkapp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>sparkapp</name>
+  <url>http://maven.apache.org</url>
+  
+  <repositories>
+    
+    <repository>
+      <id>maven-hadoop</id>
+      <name>Hadoop Releases</name>
+      <url>https://repository.cloudera.com/content/repositories/releases/</url>
+    </repository>
+    <repository>
+      <id>cloudera-repos</id>
+      <name>Cloudera Repos</name>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </repository>
+	
+
+	
+	<repository>
+		<id>maven2-repository.dev.java.net</id>
+		<name>Java.net repository</name>
+		<url>http://download.java.net/maven/2</url>
+	</repository>
+	
+	
+	 <repository>
+        <id>dev.davidsoergel.com releases</id>
+        <url>http://dev.davidsoergel.com/nexus/content/repositories/releases</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>dev.davidsoergel.com snapshots</id>
+        <url>http://dev.davidsoergel.com/nexus/content/repositories/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </repository>
+	
+	
+	
+	
+	
+
+	
+  </repositories>
+  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+<build>
+    <plugins>
+      
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+	  
+	  			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.5.201505241946</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <transformers>
+                        <!--  use transformer to handle merge of META-INF/services - see http://java.net/jira/browse/JERSEY-440?focusedCommentId=14822&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_14822 -->
+                            <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+        					<transformer
+       							 implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+       							 <resource>reference.conf</resource>
+       						</transformer>
+       						 <transformer
+       						 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+       						 <manifestEntries>
+       						 <Main-Class>akka.Main</Main-Class>
+       						 </manifestEntries>
+       						 </transformer>
+                        </transformers> 
+                        <filters>
+                            <!--  filter to address "Invalid signature file" issue - see http://stackoverflow.com/a/6743609/589215-->
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+		<resources>
+			<resource>
+				<directory>src/resource</directory>
+			</resource>
+		</resources>	
+  </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+	<groupId>org.apache.spark</groupId>
+	<artifactId>spark-core_2.10</artifactId>
+	<version>1.6.1</version>
+    </dependency>
+    
+    <dependency>
+	<groupId>org.apache.spark</groupId>
+	<artifactId>spark-streaming_2.10</artifactId>
+	<version>1.6.0</version>
+	</dependency>
+	
+	<dependency>
+	<groupId>org.apache.hadoop</groupId>
+	<artifactId>hadoop-client</artifactId>
+	<version>2.3.0-cdh5.0.0</version>
+	</dependency>
+	
+	<dependency>
+	<groupId>com.yammer.metrics</groupId>
+	<artifactId>metrics-core</artifactId>
+	<version>2.2.0</version>
+	</dependency>
+  </dependencies>
+</project>
